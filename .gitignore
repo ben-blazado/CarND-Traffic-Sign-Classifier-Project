@@ -4,9 +4,6 @@ data
 models
 *.swp
 *.p
-<<<<<<< HEAD
-
+*.zip
 *.log
 __pycache__
-=======
->>>>>>> a53673bd8bcfccceb47497a11ece4af6cc9af3f3
