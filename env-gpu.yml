@@ -1,0 +1,48 @@
+name: carnd-traffic-sign-classifier
+channels:
+    - https://conda.anaconda.org/menpo
+    - conda-forge
+dependencies:
+    - pip=19.0.3
+    - python==3.6.12    # original: - python==3.5.2
+    - imageio
+    - numpy
+    - matplotlib
+    - jupyter==1.0.0 #- jupyter
+    - pillow
+    - scikit-learn
+    - scikit-image
+    - scipy
+    - h5py
+    - eventlet
+    - flask-socketio
+    - seaborn
+    - pandas
+    - ffmpeg
+    - pyqt         #==4.11.4
+    # added ipykernel:
+    - ipykernel==5.4.3
+    - nb_conda
+    # https://stackoverflow.com/questions/64811841/tensorflow-1-15-cuda-cudnn-installation-using-conda
+    - cudatoolkit==10.0.130
+    - pip:
+        - moviepy
+        - opencv-python
+        - requests
+        - keras==2.0.9
+        - tensorflow-gpu==1.15     # - tensorflow-gpu==1.3.0
+        # added pypiwin32 below due to module not found error in jupyter notebook
+        - pypiwin32
+
+# if jupyter notebook has kernel error:
+#   try: python -m ipykernel install --user
+
+#   to create env:
+#       conda env create -f env-gpu.yml
+#   to update libraries in env:
+#       conda env update --file env-gpu.yml
+#       note: use --prune to remove old libraries i think
+#   tensforflow CUDA instructions:
+#   https://medium.com/@iitbguha/tensorflow-with-gpu-installation-made-easy-659f88c0309b
+#   how to install tensorflow gpu
+#       https://docs.anaconda.com/anaconda/user-guide/tasks/tensorflow/
