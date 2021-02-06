@@ -7,3 +7,4 @@ models
 *.zip
 *.log
 __pycache__
+checkpoints
