@@ -359,7 +359,7 @@ Compare to the Testing data, the model was only able to achieve a 96.5% accuracy
 
 Below are visualizations of the model's top-5 classifications for each of the wikipedia signs. The model for the most part was very certain (100%) for each of the classification. 
 
-<img src="wup_assets/notLenetWikiSoftMax.png" width=600>
+![](./wup_assets/notLenetWikiSoftmax.jpg)
 
 ### A Closer Look at Bicycles Crossing Sign Classification
 
