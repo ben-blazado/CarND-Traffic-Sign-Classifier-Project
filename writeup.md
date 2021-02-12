@@ -11,7 +11,6 @@ Implement a convolutional neural network that recognizes traffic signs.
 - Analyze the softmax probabilities of the new images
 - Experiment with a Multi-Scale CNN
 
-
 ## Dataset Exploration
 
 The traffic signs are contained in the `data` folder, contained in `train.p`, `valid.p`, and `test.p`. The file `signnames.csv` mapped the class ID number to the name of the type of sign. 
@@ -138,7 +137,7 @@ def equalizeHist(orgimg, v_thresh=128):
 
 #### Normalizing Image Data
 
-"A guiding principle in developing the model architecture is for the inputs to have a mean of 0.0 (zero) and have equal variance" (see [Normalized Inputs and Initialization](https://youtu.be/WaHQ9-UXIIg?t=22). This makes it easier for the Tensorflow optimizer to discover appropriate parameters (weights and biases) during training. The `function RGB_to_norm()` is applied to normalize the images:
+"A guiding principle in developing the model architecture is for the inputs to have a mean of 0.0 (zero) and have equal variance" (see [Normalized Inputs and Initialization](https://youtu.be/WaHQ9-UXIIg?t=22)). This makes it easier for the Tensorflow optimizer to discover appropriate parameters (weights and biases) during training. The `function RGB_to_norm()` is applied to normalize the images:
 
 ```python
 def RGB_to_norm(img):
@@ -360,7 +359,7 @@ Compare to the Testing data, the model was only able to achieve a 96.5% accuracy
 
 Below are visualizations of the model's top-5 classifications for each of the wikipedia signs. The model for the most part was very certain (100%) for each of the classification. 
 
-![](./wup_assets/notLenetWikiSoftMax.png)
+<img src="./wup_assets/notLenetWikiSoftMax.png" width=600>
 
 ### A Closer Look at Bicycles Crossing Sign Classification
 
