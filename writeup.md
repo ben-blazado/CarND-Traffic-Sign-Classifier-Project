@@ -365,6 +365,6 @@ Below are visualizations of the model's top-5 classifications for each of the wi
 
 The model was only 70% confident in the classification of "Bicycles Crossing". It was 30% confident that it was a sign for "Beware of Ice and Snow". This may be explained by the fact that "Beware of Ice and Snow" is the #2 Hardest Sign for the model to recognize (see [Hardest Signs](#hardest-signs)). Since the precision for "Beware of Ice and Snow is 87%", this may be a tendency towards a false positive identication of the Bicycle Crossing sign as "Beware of Ice and Snow".
 
-![](./wup_assets/notLenetWikiSoftMaxBicycles.png)
+![](./wup_assets/notLenetWikiSoftmaxBicycles.png)
 
 
