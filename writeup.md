@@ -15,6 +15,33 @@ Implement a convolutional neural network that recognizes traffic signs.
     - [Generating Fake Images](#generating-fake-images)
     - [Larger and Balanced Training Set](#larger-and-balanced-training-set)
     - [Brightening Dark Images](#brightening-dark-images)
+    - [Normalizing Image Data](#normalizing-image-data)
+    - [Examples of Processed Image](#examples-of-processed-image)
+  - [Model Architecture](#model-architecture)
+  - [Model Training](#model-training)
+  - [Solution Approach](#solution-approach)
+  - [notLenet Performance](#notLenet-performance)
+    - [Validation Accuracy](#validation-accuracy)
+    - [Accuracy Across All Datasets](#accuracy-across-all-datasets)
+    - [By-Class Perfomance with Test Dataset](#by-class-perfomance-with-test-dataset)
+      - [Hardest Signs](#hardest-signs)
+      - [Easiest Signs](#easiest-signs)
+- [Test a Model on New Images](#test-a-model-on-new-images)
+  - [Acquiring New Images](#acquiring-new-images)
+  - [Performance on New Images](#performance-on-new-images)
+  - [Model Certainty - Softmax Probabilities](#model-certainty-softmax-probabilities)
+  - [A Closer Look at Bicycles Crossing Sign Classification](#a-closer-look-at-bicycles-crossing-sign-classification)
+- [Visualize Layers of the Neural Network](#visualize-layers-of-the-neural-network)
+  - [Layer 0 Visualization](#layer-0-visualization)
+  - [Layer 1 Visualization](#layer-1-visualization)
+- [Build a Multiscale CNN](#build-a-multiscale-cnn)
+  - [Concatenate Layer](#concatenate-layer)
+  - [MutiScale Archictecture](#mutiScale-archictecture)
+  - [Training](#training)
+  - [Most Difficult Signs](#most-difficult-signs)
+  - [Most Easy Signs](#most-easy-signs)
+  - [Accuracy with Wikipedia Signs](#accuracy-with-wikipedia-signs)
+  - [Visualize Softmax Probabilties](#visualize-softmax-probabilties)
 
 ## Goals
 - Explore, summarize, and visualize traffic sign data
@@ -312,7 +339,7 @@ Accuracy across all datasets is plotted below:
 
 ![](./wup_assets/notLenetAllAcc.png)
 
-#### By-Class Perfomance with Test Data Set
+#### By-Class Perfomance with Test Dataset
 
 By-class metrics can also be computed if a `classId` is passed to the `Model.measure()` method. In this case, the model is made to predict if input image is or is not the sign associated with `classId`, instead of predicting the actual `classId` number. The labels and predictions are thus set like below:
 
@@ -334,7 +361,7 @@ Averaging each of the `accuracy`, `precision`, and `recall` scores, the most dif
 
 ![](./wup_assets/notLenetHardest.png)
 
-##### Easiest signs
+##### Easiest Signs
 
 The most easiest signs for notLenet to recognize are plotted as well:
 
