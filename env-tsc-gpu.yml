@@ -1,4 +1,4 @@
-name: carnd-traffic-sign-classifier
+name: tsc
 channels:
     - https://conda.anaconda.org/menpo
     - conda-forge
