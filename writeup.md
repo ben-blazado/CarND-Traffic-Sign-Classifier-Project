@@ -425,7 +425,7 @@ The images of notLenet's Layer 1 convolutions appear to be activating on the sig
 
 ![](./wup_assets/Layer1.png) 
 
-## Out of Curiosity: Build a Multiscale CNN
+## Build a Multiscale CNN
 
 Out of curiosity, a Multi-Scale CNN, similar to the one by Sermanet and Lecunn described in "Traffic Sign Recognition with Multi-Scale Convolutional Networks". Unlike the notLenet model used in the project, the Multi-Scale CNN is not sequential. 
 
