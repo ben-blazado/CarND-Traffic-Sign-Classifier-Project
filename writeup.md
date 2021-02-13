@@ -29,7 +29,7 @@ Implement a convolutional neural network that recognizes traffic signs.
 - [**Test a Model on New Images**](#test-a-model-on-new-images)
   - [Acquiring New Images](#acquiring-new-images)
   - [Performance on New Images](#performance-on-new-images)
-  - [Model Certainty - Softmax Probabilities](#model-certainty-softmax-probabilities)
+  - [Model Certainty and Softmax Probabilities](#model-certainty-and-softmax-probabilities)
   - [A Closer Look at Bicycles Crossing Sign Classification](#a-closer-look-at-bicycles-crossing-sign-classification)
 - [**Visualize Layers of the Neural Network**](#visualize-layers-of-the-neural-network)
   - [Layer 0 Visualization](#layer-0-visualization)
@@ -65,11 +65,7 @@ Loading and examining the data yielded the following characteristics:
 
 ### Data Visualization
 
-Below are some images from each of the 43 types of traffic signs (from the Training Samples). 
-
-Many images are very dark and will need brightness increased. 
-
-Color, shape, and orientation matters for interpretation.
+Below are some images from each of the 43 types of traffic signs (from the Training Samples). Many images are very dark and will need brightness increased. Color, shape, and orientation matters for interpretation.
 
 ![](wup_assets/TrafficSignsByType.png)
 
@@ -146,13 +142,13 @@ def rotate (image, deg=None):
 
 #### Larger and Balanced Training Set
 
-After adding the fake images, the training set grew from 34,799 to 259,290 samples. This increase in the amount of training data helped push the model to high validation accuracies during experimentation. The fake images were generated in such a way as to achieve a balance in proportion accross each type of traffic sign.
+After adding the fake images, the training set grew from 34,799 to 259,290 samples. This increase in the amount of training data helped push the model to high validation accuracies during experimentation. The fake images were generated in such a way as to achieve a balance in proportion across each type of traffic sign.
 
 ![](./wup_assets/EqualPortionsTraining.png)
 
 #### Brightening Dark Images
 
-`equalizeHist()` from `opencv` was used to brighten dark images. The image is first converted to the HSV colorspace. Then if the average value of the V-component, `mean_v`, is less than the default `v_thresh` of 128, `equalizeHist()` is applied:
+`equalizeHist()` from `opencv` was used to brighten dark images. The image is first converted to the HSV colorspace. If the average value of the V-component, `mean_v`, is less than the default `v_thresh` of 128, `equalizeHist()` is applied:
 
 ```python
 def equalizeHist(orgimg, v_thresh=128):
@@ -176,7 +172,7 @@ def equalizeHist(orgimg, v_thresh=128):
 
 #### Normalizing Image Data
 
-"A guiding principle in developing the model architecture is for the inputs to have a mean of 0.0 (zero) and have equal variance" (see [Normalized Inputs and Initialization](https://youtu.be/WaHQ9-UXIIg?t=22)). This makes it easier for the Tensorflow optimizer to discover appropriate parameters (weights and biases) during training. The `function RGB_to_norm()` is applied to normalize the images:
+A guiding principle in developing the model architecture is for the inputs to have a mean of 0.0 (zero) and have equal variance (see video [Normalized Inputs and Initialization](https://youtu.be/WaHQ9-UXIIg?t=22)). This makes it easier for the Tensorflow optimizer to discover appropriate parameters (weights and biases) during training. The function `RGB_to_norm()` is applied to normalize the images:
 
 ```python
 def RGB_to_norm(img):
@@ -185,7 +181,7 @@ def RGB_to_norm(img):
 
 #### Examples of Processed Image
 
-Below shows the effects of applying brightening, rotation, zoom, and shifting to a sample image:
+Below shows the effects of applying brightening, rotation, zoom, and shifting:
 
 ![](./wup_assets/BrightenFake.png)
 
@@ -194,11 +190,11 @@ Below shows the effects of applying brightening, rotation, zoom, and shifting to
 
 The model architecture generally follows the LeNet architecture outlined in _Lesson 13: Convolutional Neural Networks, Item 36. Lab: LeNet in Tensorflow_.
 
-A 1x1 convolution used in the very first layer has an output shape of 32x32x1. This forces the model to compress the 3 RGB channels of the Input layer into 1 channel, thus achieving a grayscaling effect, but allowing the model to determine the significance of each channel value. The improved validation accuracy was quite astonishing as compared to training the model without this 1x1 convolution in the first layer. 
+A convolution with a 1x1 filter was used in the very first layer to produce output shape of 32x32x1. This forces the model to compress the 3 RGB channels of the Input layer into 1 channel, thus achieving a grayscaling effect, but allowing the model to determine the significance of each channel value. The improved validation accuracy was quite astonishing as compared to training the model without this 1x1 convolution in the first layer. 
 
-The other convolutional layers have the same first and second dimensions as LeNet, but are deeper (24 and 64 respectively. The fully connected layers are wider with dropout added in the later stages. The  deepening of the convolutions, widening of the connections, and addition of dropout seemed to improve validation accuracy during experimentation.
+The other convolutional layers have the same first and second dimensions as LeNet, but are deeper (24 and 64 respectively). The fully connected layers are wider with dropout added in the later stages. The  deepening of the convolutions, widening of the connections, and addition of dropout seemed to improve validation accuracy during experimentation.
 
-A custom set of high level classes (`Layers`, `Conv2D`, `Pooling`, `Flatten`, `Connected`, `Dropout`, `Model`, `Sequential`) which wrap `tensorflow` are used to help code the model, named `notLenet`, in a Keras-like fashion.
+A custom set of high level classes (`Layers`, `Conv2D`, `Pooling`, `Flatten`, `Connected`, `Dropout`, `Model`, `Sequential`) which wrap Tensorflow are used to help code the model, named `notLenet`, in a Keras-like fashion.
 
 ```python
 notLenet = Sequential("notLeNet", input_shape=image_shape, n_classes=n_classes)
@@ -217,7 +213,7 @@ notLenet.addLayer (Dropout  ())
 notLenet.assemble()
 ```
 
-The model summary verified the output shapes of each layer of the model:
+The model summary confirms the output shapes of each layer of the model:
 ```
 Model-2944 |      Summary for notLeNet:
 Model-2944 | ----------------------------------
@@ -240,9 +236,9 @@ Model-2944 | ----------------------------------
 
 ### Model Training
 
-In `Model.connectLogits(),` the output logits and one-hot encoded labels were fed to Tensorflow's `tf.nn.softmax_cross_entropy_with_logits` to caculate the losses for each training batch. 
+In `Model.connectLogits(),` the output logits and one-hot encoded labels were fed to Tensorflow's `tf.nn.softmax_cross_entropy_with_logits` to calculate the loss for each training batch. 
 
-In `Model.train()`, the mean of this loss was fed to `tf.train.AdamOptimizer` which created the `minimizer` operation for use in `tf.Session.run()`. 
+In `Model.train()`, the mean of this loss was fed to `tf.train.AdamOptimizer` which created the `minimizer` operation for use in `Session.run()`. 
 
 
 ```python
@@ -270,7 +266,7 @@ def train(self, training_data, validation_data, epochs_done, batch_size, lr=0.00
             sess.run(minimizer, feed_dict=feed_dict)
 ```
 
-A batch size of `batch_size=128` was chosen through trial and error. Training terminates once `epochs_done=64` epochs have passed since last highest validation accuracy was detected. If validation accuracy reaches `acc_done=0.997` (which it doesn't), training will also terminate. the model is saved every time a new high accuracy is achieved. Keep probability for the dropout layers is `keep_prob=0.5`.
+A batch size of `batch_size=128` was chosen through trial and error. Training terminates once `epochs_done=64` epochs have passed since the last highest validation accuracy was reached. If validation accuracy reaches `acc_done=0.997` (which it doesn't), training will also terminate. The model is saved every time a new high accuracy is achieved. Keep probability for the dropout layers is `keep_prob=0.5`. `keep_prob` is, however, set to 1.0 when calculating accuracy, precision, and recall in the `Model.measure()` method.
 
 ```python
 notLenet.train(trainingSigns.data(), validSigns.data(), batch_size=128, 
@@ -285,7 +281,7 @@ The `Model.measure()` method is used to calculate validation accuracy after each
 acc = round (self.measure([tf.metrics.accuracy], validation_data)[0], 3)
 ```
 
-`Model.measure()` use as list of Tensorflow metrics, `tf_metrics` parameter, to calculate the desired metrics. In the case of calculating accuracy during training:
+`Model.measure()` uses a list of Tensorflow metrics, `tf_metrics` parameter, to calculate the desired metrics. In the case of calculating accuracy during training:
 
 ```python
 tf_metrics = [tf.metrics.accuracy]
@@ -307,12 +303,17 @@ for i, tf_metric in enumerate(tf_metrics):
     op_metric, op_upd_metric = tf_metric(labels, predictions, name=name)
 ```
 
-The update metric operation, `op_upd_metric`, is then used successively for each batch of validation data:
+The update metric operation, `op_upd_metric`, is then used successively for each batch of validation data (`keep_prob` is set to 1.0 as mentioned earlier):
 
 ```python
 for offset in range(0, n_samples, batch_size):
 
-    #...etc...
+    batch_x   = X_data[offset:offset+batch_size] 
+    batch_y   = y_data[offset:offset+batch_size]
+    feed_dict = {self.x        : batch_x, 
+                 self.y        : batch_y, 
+                 self.keep_prob: 1.0}
+    
     for op_upd_metric in op_upd_metrics:
         sess.run(op_upd_metric, feed_dict=feed_dict)
 ```
@@ -341,7 +342,7 @@ Accuracy across all datasets is plotted below:
 
 #### By-Class Perfomance with Test Dataset
 
-By-class metrics can also be computed if a `classId` is passed to the `Model.measure()` method. In this case, the model is made to predict if input image is or is not the sign associated with `classId`, instead of predicting the actual `classId` number. The labels and predictions are thus set like below:
+By-class metrics can also be computed if a `classId` is passed to the `Model.measure()` method.  Instead of predicting the `classId` number of an input image, the model is made to predict if input image is or is not the traffic sign associated with `classId`. The labels and predictions are thus set like below:
 
 ```python
 tf_classId  = tf.constant(classId, tf.int64)
@@ -349,7 +350,7 @@ labels      = tf.equal(tf.argmax(self.oh_labels, 1), tf_classId)
 predictions = tf.equal(tf.argmax(self.logits, 1), tf_classId)
 ```
 
-Additional performance metrics on the Testing Data is calculated (by type of traffic sign) with the `Model.metrics_by_class()` method:
+Additional performance metrics on the Testing data is calculated (by type of traffic sign) with the `Model.metrics_by_class()` method:
 
 ```python
 accuracy, precision, recall = notLenet.metrics_by_class(testSigns.data())
@@ -363,7 +364,7 @@ Averaging each of the `accuracy`, `precision`, and `recall` scores, the most dif
 
 ##### Easiest Signs
 
-The most easiest signs for notLenet to recognize are plotted as well:
+The most easy signs for notLenet to recognize are plotted as well:
 
 ![](./wup_assets/notLenetEasiest.png)
 
@@ -375,7 +376,7 @@ Wikipedia images of German signs were used due to ease of access. Unlike the dat
 
 The symbols, colors, and shapes appear clearly so the model should be able to classify them easily. 
 
-However, the model has never seen grahics of the signs. The signs also had to be downsized to a lower resolution of 32x32 for the model to use.
+However, the model has never seen graphics versions of the signs. The signs also had to be downsized to a lower resolution of 32x32 for the model to use.
 
 ![](./wup_assets/WikipediaTrafficSigns.png)
 
@@ -394,15 +395,15 @@ While the model was able to achieve a 100% accuracy with the wikipedia signs, it
 
 ![](./wup_assets/notLenetAllAcc.png)
 
-### Model Certainty - Softmax Probabilities
+### Model Certainty and Softmax Probabilities
 
-Below are visualizations of the model's top-5 classifications for each of the wikipedia signs. The model for the most part was very confident (100%) for each of the classification, exept for the "Bicycles Crossing" sign. 
+Below are visualizations of the model's top-5 classifications for each of the Wikipedia signs. The model was very confident (~100%) for each classification. The classification confidence for the "Bicycles Crossing" sign, however, was ~70%. 
 
 ![](./wup_assets/notLenetWikiSoftmax.png)
 
 ### A Closer Look at Bicycles Crossing Sign Classification
 
-The model was only 70% confident in the classification of "Bicycles Crossing". It was 30% confident that it was a sign for "Beware of Ice and Snow". This may be explained by the fact that "Beware of Ice and Snow" was ranked as the #2 Hardest Sign for the model to recognize (see [Hardest Signs](#hardest-signs)) with a precision of only 87%. What is happening in this instance is the model tending to have a false positive identication of the "Bicycle Crossing" sign as "Beware of Ice and Snow".
+The model was only ~70% confident in the classification of "Bicycles Crossing". It was ~30% confident that the sign was for "Beware of Ice and Snow". This may be explained by the fact that "Beware of Ice and Snow" was ranked as the #2 Hardest Sign for the model to recognize (see [Hardest Signs](#hardest-signs)) with a precision of only 87%. What is happening in this instance is the model tending to have a false positive (~13%) of the "Beware of Ice and Snow" sign.
 
 ![](./wup_assets/notLenetWikiSoftmaxBicycles.png)
 
@@ -478,11 +479,13 @@ The model achieved a 97.1% accuracy with Testing data. Accuracy across all datas
 
 notSermanet's top 10 most difficult signs are plotted below. Just like in notLenet, the "Beware of Ice/Snow", "Pedestrians", and "Dangerous Curve to the Right" in the top of the group.
 
-![](./wup_assets/notSermanetAllAcc.png) 
+![](./wup_assets/notSermanetHardest.png) 
 
 ### Most Easy Signs
 
 notSermanet's top 10 most easy signs are plotted below. Only the signs "Go Straight or Right", "No Passing for Vehicles over 3.5 metric tons", "Dangerous Curve to the Left", and "Bumpy Road" are in notSermanet's top 10, while are rest the signs are common to notLenet's.
+
+![](./wup_assets/notSermanetEasiest.png) 
 
 ### Accuracy with Wikipedia Signs
 
@@ -492,6 +495,6 @@ Like notLenet, notSermanet correctly identifies all the Wikipedia signs.
 
 ### Visualize Softmax Probabilties
 
-Also like notLenet, notSermanet has high confidence in all of it's classifications. It's also worth noting that, for the "Bicycles Crossing" sign, notSermanet did have a small ~1% confidence that it was a "Beware of Ice/Snow" sign.
+Also like notLenet, notSermanet has high confidence in all of its classifications. For the "Bicycles Crossing" sign, notSermanet did have a small ~1% confidence that it was a "Beware of Ice/Snow" sign.
 
 ![](./wup_assets/notSermanetWikiSoftmax.png)
