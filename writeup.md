@@ -318,7 +318,7 @@ accuracy, precision, recall = notLenet.metrics_by_class(testSigns.data())
 
 ##### Hardest Signs
 
-Averaging each of the `accuracy`, `precision`, and `recall` scores, the most difficult signs for notLenet to recognize can then be plotted:
+Averaging each of the `accuracy`, `precision`, and `recall` scores, the most difficult signs for notLenet to recognize can then be plotted.
 
 ![](./wup_assets/notLenetHardest.png)
 
@@ -342,7 +342,7 @@ However, the model has never seen grahics of the signs. The signs also had to be
 
 ### Performance on New Images
 
-As expected, notLenet was able to accurately (100%) classify all Wikipedia traffic signs. While the signs were graphics which the model has never seen, the clear symbols, colors, and shapes probably allowed the model to more easily classify the signs.
+notLenet accuracy with the Wikipedia signs is caculated and, as expected, was able to classify all (100%) the acquired Wikipedia traffic signs correctly.  
 
 ```python
 notLenet_acc = notLenet.metrics(wiki_traffic_signs.data(), metrics=[tf.metrics.accuracy])[0]
@@ -351,20 +351,108 @@ vwr.barhScores("notLenet Accuracy with Traffic Signs from Wikipedia", [notLenet_
 
 ![](./wup_assets/notLenetWikiAcc.png)
 
-Compare to the Testing data, the model was only able to achieve a 96.5% accuracy.
+While the model was able to achieve a 100% accuracy with the wikipedia signs, it only achieved a 96.5% accuracy with the Testing data (see [Accuracy Across All Datasets](#accuracy-across-all-datasets). The model correctly identified previously unseen Wikipedia signs, however, the clear symbols, colors, and shapes of the graphics probably allowed the model to more easily classify the them.
 
 ![](./wup_assets/notLenetAllAcc.png)
 
 ### Model Certainty - Softmax Probabilities
 
-Below are visualizations of the model's top-5 classifications for each of the wikipedia signs. The model for the most part was very certain (100%) for each of the classification. 
+Below are visualizations of the model's top-5 classifications for each of the wikipedia signs. The model for the most part was very confident (100%) for each of the classification, exept for the "Bicycles Crossing" sign. 
 
 ![](./wup_assets/notLenetWikiSoftmax.png)
 
 ### A Closer Look at Bicycles Crossing Sign Classification
 
-The model was only 70% confident in the classification of "Bicycles Crossing". It was 30% confident that it was a sign for "Beware of Ice and Snow". This may be explained by the fact that "Beware of Ice and Snow" is the #2 Hardest Sign for the model to recognize (see [Hardest Signs](#hardest-signs)). Since the precision for "Beware of Ice and Snow is 87%", this may be a tendency towards a false positive identication of the Bicycle Crossing sign as "Beware of Ice and Snow".
+The model was only 70% confident in the classification of "Bicycles Crossing". It was 30% confident that it was a sign for "Beware of Ice and Snow". This may be explained by the fact that "Beware of Ice and Snow" was ranked as the #2 Hardest Sign for the model to recognize (see [Hardest Signs](#hardest-signs)) with a precision of only 87%. What is happening in this instance is the model tending to have a false positive identication of the "Bicycle Crossing" sign as "Beware of Ice and Snow".
 
 ![](./wup_assets/notLenetWikiSoftmaxBicycles.png)
 
+## Visualize Layers of the Neural Network
 
+The image selected was a "Speed Limit 70km/h" sign. The `Model.eval_layer()` method is then used to plot and examine the layer output of the selected image.
+
+![](./wup_assets/70kmh.png)
+
+
+### Layer 0 Visualization
+
+Below shows the image of notLenet's Layer 0, which is the convolutional layer with a 32x32x1 output (1x1 filter). The activations provide appear to convert the sign to grayscale, with the contours of the red circular boundary and the number "70" visible.
+
+![](./wup_assets/Layer0.png)
+
+### Layer 1 Visualization
+
+The images of notLenet's Layer 1 convolutions appear to be activating on the sign's circular shape, and the model encoding the interior of the image with it's representation of "70".
+
+![](./wup_assets/Layer1.png) 
+
+## Out of Curiosity: Build a Multiscale CNN
+
+Out of curiosity, a Multi-Scale CNN, similar to the one by Sermanet and Lecunn described in "Traffic Sign Recognition with Multi-Scale Convolutional Networks". Unlike the notLenet model used in the project, the Multi-Scale CNN is not sequential. 
+
+### Concatenate Layer
+
+A custom layer class, `class Concatenate(Layer)`, wraps the Tensorflow function `concat()`. It is used to concatenate the output of the first layer with the later stages of the model.
+
+### MutiScale Archictecture
+
+The model's architecture is similar to the one Sermanet and Lecunn described in "Traffic Sign Recognition with Multi-Scale Convolutional Networks" where the output of the first stage is fed to the classifier stage.
+
+```python
+notSermanet = Model("notSermanet", image_shape, n_classes)
+
+stage_1x1 = Conv2D ([32, 32, 1]).connect(notSermanet.inputLayer())
+
+stage_1 = Conv2D ([28, 28, 24]).connect(stage_1x1)
+stage_1 = Pooling([14, 14]).connect(stage_1)
+flatten_1 = Flatten().connect(stage_1)
+
+stage_2 = Conv2D ([10, 10, 64]).connect(stage_1)
+stage_2 = Pooling([ 5,  5]).connect(stage_2)
+stage_2 = Conv2D ([3, 3, 96]).connect(stage_2)
+flatten_2 = Flatten().connect(stage_2)
+
+stage_3 = Concatenate().connect(flatten_1, flatten_2)
+stage_3 = Connected([240]).connect(stage_3)
+stage_3 = Dropout().connect(stage_3)
+stage_3 = Connected([168]).connect(stage_3)
+stage_3 = Dropout().connect(stage_3)
+
+notSermanet.connectLogits(stage_3)
+```
+
+Visually:
+
+![](./wup_assets/multiscaleCNN.png) 
+
+### Training
+
+notSermanet achieved 99.0% accuracy at epoch 42.
+
+![](./wup_assets/notSermanetValAcc.png) 
+
+The model achieved a 97.1% accuracy with Testing data. Accuracy across all datasets are plotted below:
+
+![](./wup_assets/notSermanetAllAcc.png) 
+
+### Most Difficult Signs
+
+notSermanet's top 10 most difficult signs are plotted below. Just like in notLenet, the "Beware of Ice/Snow", "Pedestrians", and "Dangerous Curve to the Right" in the top of the group.
+
+![](./wup_assets/notSermanetAllAcc.png) 
+
+### Most Easy Signs
+
+notSermanet's top 10 most easy signs are plotted below. Only the signs "Go Straight or Right", "No Passing for Vehicles over 3.5 metric tons", "Dangerous Curve to the Left", and "Bumpy Road" are in notSermanet's top 10, while are rest the signs are common to notLenet's.
+
+### Accuracy with Wikipedia Signs
+
+Like notLenet, notSermanet correctly identifies all the Wikipedia signs.
+
+![](./wup_assets/notSermanetWikiAcc.png)
+
+### Visualize Softmax Probabilties
+
+Also like notLenet, notSermanet has high confidence in all of it's classifications. It's also worth noting that, for the "Bicycles Crossing" sign, notSermanet did have a small ~1% confidence that it was a "Beware of Ice/Snow" sign.
+
+![](./wup_assets/notSermanetWikiSoftmax.png)
