@@ -1,8 +1,20 @@
-7-FEB-2021
+12-FEB-2021
 # Traffic Sign Recognition
 Implement a convolutional neural network that recognizes traffic signs.
 
 ![](./wup_assets/notLenetValAcc.png)
+
+## Table of Contents
+- [Goals](#goals)
+- [Dataset Exploration](#dataset-exploration)
+  - [Data Summary](#data-summary)
+  - [Data Visualization](#data-visualization)
+  - [Sign Type Proportionality](#sign-type-proportionality)
+- [Design and Test a Model Architecture](#design-and-test-a-model-architecture)
+  - [Preprocessing](#preprocessing)
+    - [Generating Fake Images](#generating-fake-images)
+    - [Larger and Balanced Training Set](#larger-and-balanced-training-set)
+    - [Brightening Dark Images](#brightening-dark-images)
 
 ## Goals
 - Explore, summarize, and visualize traffic sign data
