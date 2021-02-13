@@ -416,27 +416,41 @@ The image selected was a "Speed Limit 70km/h" sign. The `Model.eval_layer()` met
 
 ### Layer 0 Visualization
 
-Below shows the image of notLenet's Layer 0, which is the convolutional layer with a 32x32x1 output (1x1 filter). The activations provide appear to convert the sign to grayscale, with the contours of the red circular boundary and the number "70" visible.
+Below shows the image of notLenet's Layer 0, which is a convolutional layer with a 32x32x1 output (1x1 filter). The activations provide appear to convert the sign to grayscale, with the contours of the red circular boundary and the number "70" visible.
 
 ![](./wup_assets/Layer0.png)
 
 ### Layer 1 Visualization
 
-The images of notLenet's Layer 1 convolutions appear to be activating on the sign's circular shape, and the model encoding the interior of the image with it's representation of "70".
+The images of notLenet's Layer 1 convolutions (output shape 28x28x24) appear to be activating on the sign's circular shape and encoding the interior of the image with its representation of "70".
 
 ![](./wup_assets/Layer1.png) 
 
 ## Build a Multiscale CNN
 
-Out of curiosity, a Multi-Scale CNN, similar to the one by Sermanet and Lecunn described in "Traffic Sign Recognition with Multi-Scale Convolutional Networks". Unlike the notLenet model used in the project, the Multi-Scale CNN is not sequential. 
+Out of curiosity, a Multi-Scale CNN, similar to the one described by Sermanet and Lecunn in _"Traffic Sign Recognition with Multi-Scale Convolutional Networks"_. Unlike the notLenet model discussed earlier in this project, the Multi-Scale CNN is not sequential. 
 
 ### Concatenate Layer
 
 A custom layer class, `class Concatenate(Layer)`, wraps the Tensorflow function `concat()`. It is used to concatenate the output of the first layer with the later stages of the model.
 
+```python
+class Concatenate(Layer):
+    
+    def setName(self):
+        self.name = "Concatenate"
+        return
+
+    def connect(self, *prev_layers):
+        self.model = prev_layers[0].model
+        tensors = [layer.tensor for layer in prev_layers]
+        self.tensor = tf.concat(tensors, axis=1)
+        return self
+```
+
 ### MutiScale Archictecture
 
-The model's architecture is similar to the one Sermanet and Lecunn described in "Traffic Sign Recognition with Multi-Scale Convolutional Networks" where the output of the first stage is fed to the classifier stage.
+The model's architecture is similar to the one Sermanet and Lecunn described in _"Traffic Sign Recognition with Multi-Scale Convolutional Networks"_ where the output of the first stage is fed to the classifier stage.
 
 ```python
 notSermanet = Model("notSermanet", image_shape, n_classes)
@@ -467,7 +481,7 @@ Visually:
 
 ### Training
 
-notSermanet achieved 99.0% accuracy at epoch 42.
+notSermanet achieved 99.0% validation accuracy at epoch 42.
 
 ![](./wup_assets/notSermanetValAcc.png) 
 
@@ -477,7 +491,7 @@ The model achieved a 97.1% accuracy with Testing data. Accuracy across all datas
 
 ### Most Difficult Signs
 
-notSermanet's top 10 most difficult signs are plotted below. Just like in notLenet, the "Beware of Ice/Snow", "Pedestrians", and "Dangerous Curve to the Right" in the top of the group.
+notSermanet's top 10 most difficult signs are plotted below. Just like in notLenet, the "Beware of Ice/Snow", "Pedestrians", and "Dangerous Curve to the Right" are in the top of the group.
 
 ![](./wup_assets/notSermanetHardest.png) 
 
@@ -489,7 +503,7 @@ notSermanet's top 10 most easy signs are plotted below. Only the signs "Go Strai
 
 ### Accuracy with Wikipedia Signs
 
-Like notLenet, notSermanet correctly identifies all the Wikipedia signs.
+Like notLenet, notSermanet correctly identifies all the Wikipedia signs (100% accuracy).
 
 ![](./wup_assets/notSermanetWikiAcc.png)
 
