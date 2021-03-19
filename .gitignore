@@ -8,3 +8,4 @@ models
 *.log
 __pycache__
 checkpoints
+fix_email.bat
