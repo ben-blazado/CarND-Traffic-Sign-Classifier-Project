@@ -24,3 +24,8 @@ Intended user is the Udacity evaluator for this project. It is intended to be us
 - `data\`: folder containing pickled training, validation, and testing datasets
 - `traffic_signs\wikipedia\`: folder containing German traffic signs from wikipedia for model testing
 - `wup_assets\`: folder containing images used in writeup
+- `evaluation.png`: Udacity evaluation of project
+
+## Evaluation
+
+![](./evaluation.png)
